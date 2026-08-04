@@ -75,9 +75,11 @@
       btn.disabled = true;
 
       try {
-        const response = await fetch("https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2", {
+        const response = await fetch("https://api-inference.huggingface.co/models/Mistralai/Mistral-7B-Instruct-v0.2", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json"
+          },
           body: JSON.stringify({
             inputs: `Write a short horror story about: ${promptInput}`,
             parameters: { max_new_tokens: 250 }
@@ -91,7 +93,7 @@
         } else if (Array.isArray(result) && result[0]?.generated_text) {
           outputDiv.innerText = result[0].generated_text;
         } else {
-          outputDiv.innerText = JSON.stringify(result, null, 2);
+          outputDiv.innerText = typeof result === 'object' ? JSON.stringify(result, null, 2) : result;
         }
       } catch (err) {
         outputDiv.innerText = "Failed to fetch response: " + err.message;
@@ -101,5 +103,4 @@
     }
   </script>
 </body>
-                                 </html>
-
+</html>
