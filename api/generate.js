@@ -11,14 +11,14 @@ export default async function handler(req, res) {
   }
 
   try {
-    const response = await fetch("https://router.huggingface.co/hf-inference/models/mistralai/Mistral-7B-Instruct-v0.2", {
+    const response = await fetch("https://router.huggingface.co/hf-inference/models/Qwen/Qwen2.5-7B-Instruct", {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${token.trim()}`,
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        inputs: `Write a short horror story about: ${prompt}`,
+        inputs: `Write a creepy short horror story based on this prompt: ${prompt}`,
         parameters: { max_new_tokens: 250 }
       })
     });
