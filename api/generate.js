@@ -4,12 +4,17 @@ export default async function handler(req, res) {
   }
 
   const { prompt } = req.body;
+  const token = process.env.HF_TOKEN;
+
+  if (!token) {
+    return res.status(500).json({ error: 'HF_TOKEN environment variable is missing on Vercel.' });
+  }
 
   try {
-    const response = await fetch("https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2", {
+    const response = await fetch("https://router.huggingface.co/hf-inference/models/mistralai/Mistral-7B-Instruct-v0.2", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${process.env.HF_TOKEN}`,
+        "Authorization": `Bearer ${token.trim()}`,
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
@@ -19,8 +24,13 @@ export default async function handler(req, res) {
     });
 
     const data = await response.json();
+
+    if (!response.ok) {
+      return res.status(response.status).json({ error: data.error || 'Hugging Face API error' });
+    }
+
     return res.status(200).json(data);
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    return res.status(500).json({ error: 'Server fetch failed: ' + error.message });
   }
-      }
+}
